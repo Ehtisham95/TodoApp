@@ -42,13 +42,17 @@ const Login: () => Node = ({navigation}) => {
       .then(result => {
         setConfirm(confirmation);
       })
-      .catch(err => {});
+      .catch(err => {
+        Alert.alert('Error', err.toString());
+      });
   }
 
   async function confirmCode() {
     try {
       await confirm.confirm(code);
-    } catch (error) {}
+    } catch (error) {
+      () => Alert.alert('Error');
+    }
   }
 
   const onNumberChanged = num => {
@@ -59,6 +63,8 @@ const Login: () => Node = ({navigation}) => {
     if (confirm) navigation.navigate(Routes.ROUTE_OTP);
   }, confirm);
 
+  if (initializing) return null;
+
   if (!user) {
     return (
       <StyledView>
@@ -66,7 +72,7 @@ const Login: () => Node = ({navigation}) => {
         <RoundedTextInput
           placeholder="Phone Number"
           onChangeText={onNumberChanged}
-          maxLength={11}
+          maxLength={14}
           value={inputFields.number}
         />
         <RoundedButton
