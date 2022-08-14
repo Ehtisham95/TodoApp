@@ -1,5 +1,6 @@
 require_relative '../node_modules/react-native/scripts/react_native_pods'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
+$RNFirebaseAsStaticFramework = true
 
 platform :ios, '12.4'
 install! 'cocoapods', :deterministic_uuids => false
@@ -8,6 +9,7 @@ production = ENV["PRODUCTION"] == "1"
 
 target 'todoapp' do
   config = use_native_modules!
+  use_frameworks!
 
   # Flags change depending on the env values.
   flags = get_default_flags()
@@ -27,6 +29,22 @@ target 'todoapp' do
     inherit! :complete
     # Pods for testing
   end
+
+  $static_framework = ['FlipperKit', 'Flipper', 'Flipper-Folly',
+  'CocoaAsyncSocket', 'ComponentKit', 'DoubleConversion',
+  'glog', 'Flipper-PeerTalk', 'Flipper-RSocket', 'Yoga', 'YogaKit',
+  'CocoaLibEvent', 'OpenSSL-Universal', 'boost-for-react-native']
+
+pre_install do |installer|
+  Pod::Installer::Xcode::TargetValidator.send(:define_method, :verify_no_static_framework_transitive_dependencies) {}
+  installer.pod_targets.each do |pod|
+      if $static_framework.include?(pod.name)
+        def pod.build_type;
+          Pod::BuildType.static_library
+        end
+      end
+    end
+end
 
   post_install do |installer|
     react_native_post_install(installer)
