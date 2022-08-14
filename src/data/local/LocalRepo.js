@@ -10,5 +10,6 @@ export const setUserLoggedIn = async value => {
 
 export const getUserLoggedIn = async () => {
   const value = await AsyncStorage.getItem(PrefKeys.IS_USER_LOGGED_IN);
-  return value;
+  if (value == null || value == 'false') return false;
+  else return true;
 };

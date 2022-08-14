@@ -15,12 +15,7 @@ import {getUserLoggedIn} from './src/data/local/LocalRepo';
 const Stack = createNativeStackNavigator();
 
 const App: () => Node = () => {
-  const [signedIn, setSignedIn] = useState(false);
-
-  useEffect(() => {
-    let loggedIn = getUserLoggedIn();
-    setSignedIn(loggedIn != null ? loggedIn : false);
-  });
+  const [signedIn, setSignedIn] = useState(getUserLoggedIn());
 
   return (
     <ThemeProvider theme={Theme}>
