@@ -7,8 +7,10 @@ import styled from 'styled-components/native';
 import {RoundedTextInput} from '../../styles/textinputs/RoundedTextInput';
 import {RoundedButton} from '../../styles/buttons/RoundedButton';
 import {ScreenTitle} from '../../styles/texts/ScreenTitle';
+import ButtonProgress from '../../styles/progress/ButtonProgress';
 import auth from '@react-native-firebase/auth';
 import Routes from '../../utils/Routes';
+import {setUserLoggedIn} from '../../data/local/LocalRepo';
 
 const StyledView = styled.View`
   background-color: white;
@@ -22,7 +24,7 @@ const Login: () => Node = ({navigation}) => {
   const [code, setCode] = useState('');
 
   //input fields
-  const [inputFields, setInputFields] = useState({number: ''});
+  const [inputFields, setInputFields] = useState({number: '', loading: false});
 
   //Connecting with Firebase
   const onAuthStateChanged = user => {
@@ -36,23 +38,26 @@ const Login: () => Node = ({navigation}) => {
   }, []);
 
   //OTP
-  function signInWithPhoneNumber(phoneNumber) {
+  function signInWithPhoneNumber(inputFields) {
+    setInputFields({inputFields: inputFields.number, loading: true});
     auth()
-      .signInWithPhoneNumber(phoneNumber)
+      .signInWithPhoneNumber(inputFields.number)
       .then(result => {
-        setConfirm(confirmation);
+        setConfirm(result);
       })
-      .catch(err => {
-        Alert.alert('Error', err.toString());
-      });
+      .catch(err => Alert.alert('Error', err.toString()));
   }
 
-  async function confirmCode() {
-    try {
-      await confirm.confirm(code);
-    } catch (error) {
-      () => Alert.alert('Error');
-    }
+  function confirmCode() {
+    confirm
+      .confirm(code)
+      .then(result => {
+        setInputFields({inputFields: inputFields.number, loading: false});
+        setUserLoggedIn(true);
+      })
+      .catch(err => {
+        () => Alert.alert('Error');
+      });
   }
 
   const onNumberChanged = num => {
@@ -66,21 +71,36 @@ const Login: () => Node = ({navigation}) => {
   if (initializing) return null;
 
   if (!user) {
-    return (
-      <StyledView>
-        <ScreenTitle title="Sign In" />
-        <RoundedTextInput
-          placeholder="Phone Number"
-          onChangeText={onNumberChanged}
-          maxLength={14}
-          value={inputFields.number}
-        />
-        <RoundedButton
-          title="Login"
-          onPress={() => signInWithPhoneNumber(inputFields.number)}
-        />
-      </StyledView>
-    );
+    if (!inputFields.loading) {
+      return (
+        <StyledView>
+          <ScreenTitle title="Sign In" />
+          <RoundedTextInput
+            placeholder="Phone Number"
+            onChangeText={onNumberChanged}
+            maxLength={14}
+            value={inputFields.number}
+          />
+          <RoundedButton
+            title="Login"
+            onPress={() => signInWithPhoneNumber(inputFields)}
+          />
+        </StyledView>
+      );
+    } else {
+      return (
+        <StyledView>
+          <ScreenTitle title="Sign In" />
+          <RoundedTextInput
+            placeholder="Phone Number"
+            onChangeText={onNumberChanged}
+            maxLength={14}
+            value={inputFields.number}
+          />
+          <ButtonProgress />
+        </StyledView>
+      );
+    }
   }
 };
 export default Login;
