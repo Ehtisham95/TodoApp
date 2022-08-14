@@ -2,7 +2,6 @@ import React from 'react';
 import {Button} from 'react-native';
 import styled from 'styled-components/native';
 import Theme from '../../themes/theme';
-import * as Progress from 'react-native-progress';
 
 const RoundedTouchableOpacity = styled.TouchableOpacity`
   height: 48px;
