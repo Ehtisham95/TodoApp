@@ -1,37 +1,20 @@
 import {createSlice} from '@reduxjs/toolkit';
+import {getUserData} from '../data/AuthRepo';
 
 export const loginSlice = createSlice({
-  name: 'loginState',
-  initialState: null,
+  name: 'loginSlice',
+  initialState: {user: {}, loggedIn: false},
   reducers: {
-    userData(state, action) {
-      console.log('user data');
-      state = {
-        ...state,
-        user: action.payload,
-      };
-    },
-    loggedIn(state) {
-      console.log('login');
-      state = {
-        ...state,
-        loggedIn: true,
-        otpVerified: false,
-      };
-    },
-    verified(state) {
-      console.log('verified');
-      state = {
-        ...state,
-        otpVerified: true,
-      };
+    loggedIn(state, action) {
+      state.loggedIn = true;
+      state.user = action.payload;
     },
     loggedOut(state) {
-      console.log('loggedout');
-      state = null;
+      state.user = {};
+      state.loggedIn = false;
     },
   },
 });
 
-export const {loggedIn, loggedOut, verified, userData} = loginSlice.actions;
+export const {loggedIn, loggedOut} = loginSlice.actions;
 export default loginSlice.reducer;

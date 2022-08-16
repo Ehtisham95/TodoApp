@@ -3,7 +3,7 @@ import React, {Node, useEffect, useState} from 'react';
 import {Alert} from 'react-native';
 import {useDispatch} from 'react-redux';
 import styled from 'styled-components/native';
-import {setUserData} from '../../data/AuthRepo';
+import {getUserData, setUserData, signInWithNumber} from '../../data/AuthRepo';
 import {loginSlice} from '../../redux/LoginSlice';
 import {RoundedButton} from '../../styles/buttons/RoundedButton';
 import ButtonProgress from '../../styles/progress/ButtonProgress';
@@ -20,36 +20,24 @@ const Login: () => Node = ({navigation}) => {
   const dispatch = useDispatch();
 
   //Sign in function
-  function signIn() {
-    console.log('SignedIn Clicked');
+  async function signIn() {
     setInputFields({...inputFields, loading: true});
-    if (inputFields.number != null && inputFields.number.length > 0) {
-      auth()
-        .signInWithPhoneNumber(inputFields.number)
-        .then(result => {
-          console.log('LOGIN SUCCESS!');
-          onAuthStateChanged(JSON.stringify(result));
-          setInputFields({...inputFields, loading: false});
-        })
-        .catch(err => {
-          console.log('FIREBASE ERROR!');
-          Alert.alert('Error', 'Firebase Login Error!');
-          setInputFields({...inputFields, loading: false});
-        });
+    const response = await signInWithNumber(inputFields.number);
+    setInputFields({...inputFields, loading: false});
+    if (response) {
+      onAuthStateChanged(JSON.stringify(response));
     } else {
-      console.log('Fields Empty');
       Alert.alert('Error', 'Login Error!');
-      setInputFields({...inputFields, loading: false});
     }
   }
   //Connecting with Firebase
-  const onAuthStateChanged = userData => {
-    const newUserData = {
-      user: userData,
-      isVerified: false,
-    };
-    setUserData(newUserData);
-    dispatch(loginSlice.actions.loggedIn());
+  const onAuthStateChanged = async userData => {
+    await setUserData({
+      user: userData != null ? userData : null,
+      loggedIn: true,
+    });
+    const loggedInUser = await getUserData();
+    dispatch(loginSlice.actions.loggedIn(loggedInUser));
   };
 
   if (!inputFields.loading) {
