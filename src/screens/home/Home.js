@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {FlatList} from 'react-native';
+import React, {useCallback, useEffect, useState} from 'react';
+import {FlatList, RefreshControl, ScrollView} from 'react-native';
 import {FAB} from 'react-native-elements';
 import styled from 'styled-components/native';
 import {getTodosOnce} from '../../data/TodoRepo';
@@ -8,6 +8,7 @@ import TodoListItem from './TodoListItem';
 
 const HomeBg = styled.View`
   flex: 1;
+  height: 100%;
 `;
 
 const FabStyle = styled.View`
@@ -18,9 +19,15 @@ const FabStyle = styled.View`
 
 const Home = ({navigation}) => {
   const [todoList, setTodoList] = useState([]);
+  const [refreshing, setRefreshing] = React.useState(false);
 
   useEffect(() => {
     getData();
+  }, []);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    wait(2000).then(() => setRefreshing(false));
   }, []);
 
   const getData = async () => {
