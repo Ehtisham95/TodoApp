@@ -1,8 +1,6 @@
-import React from 'react';
-
 const Routes = {
   ROUTE_LOGIN: 'Sign In',
-  ROUTE_OTP: 'OTP',
+  ROUTE_TODO: 'Todo Details',
   ROUTE_HOME: 'Home',
 };
 

@@ -1,5 +1,4 @@
-import auth from '@react-native-firebase/auth';
-import React, {Node, useEffect, useState} from 'react';
+import React, {Node, useState} from 'react';
 import {Alert} from 'react-native';
 import {useDispatch} from 'react-redux';
 import styled from 'styled-components/native';
@@ -25,15 +24,15 @@ const Login: () => Node = ({navigation}) => {
     const response = await signInWithNumber(inputFields.number);
     setInputFields({...inputFields, loading: false});
     if (response) {
-      onAuthStateChanged(JSON.stringify(response));
+      onAuthStateChanged();
     } else {
       Alert.alert('Error', 'Login Error!');
     }
   }
   //Connecting with Firebase
-  const onAuthStateChanged = async userData => {
+  const onAuthStateChanged = async () => {
     await setUserData({
-      user: userData != null ? userData : null,
+      user: {id: inputFields.number},
       loggedIn: true,
     });
     const loggedInUser = await getUserData();

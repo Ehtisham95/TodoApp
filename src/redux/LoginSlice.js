@@ -1,5 +1,4 @@
 import {createSlice} from '@reduxjs/toolkit';
-import {getUserData} from '../data/AuthRepo';
 
 export const loginSlice = createSlice({
   name: 'loginSlice',

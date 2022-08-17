@@ -9,16 +9,17 @@ import {getUserData, setUserData} from './src/data/AuthRepo';
 import {loggedIn, loginSlice, loggedOut} from './src/redux/LoginSlice';
 import {store} from './src/redux/store';
 import Home from './src/screens/home/Home';
+import TodoDetails from './src/screens/todo/TodoDetails';
 import Login from './src/screens/login/Login';
 import Theme from './src/themes/theme';
 import Routes from './src/utils/Routes';
-import {Button} from 'react-native';
+import {Button, Text} from 'react-native';
 import {signOut} from './src/data/AuthRepo';
 
 const Stack = createNativeStackNavigator();
 
 const MyApp: () => Node = () => {
-  const [authData, setAuthData] = useState({user: {}, loggedIn: false});
+  const [authData, setAuthData] = useState({user: {id: ''}, loggedIn: false});
   const [initializing, setInitializing] = useState(true);
   const dispatch = useDispatch();
 
@@ -39,7 +40,7 @@ const MyApp: () => Node = () => {
   };
 
   const logOut = async () => {
-    await setUserData({user: {}, loggedIn: false});
+    await setUserData({user: {id: ''}, loggedIn: false});
     dispatch(loggedOut());
   };
 
@@ -71,8 +72,16 @@ const MyApp: () => Node = () => {
                   headerTintColor: Theme.colors.textColor,
                   headerStyle: {backgroundColor: Theme.colors.primary},
                   headerRight: () => (
-                    <Button onPress={() => logOut(0)} title="Logout" />
+                    <Text onPress={() => logOut()}>Logout</Text>
                   ),
+                }}
+              />
+              <Stack.Screen
+                name={Routes.ROUTE_TODO}
+                component={TodoDetails}
+                options={{
+                  headerTintColor: Theme.colors.textColor,
+                  headerStyle: {backgroundColor: Theme.colors.primary},
                 }}
               />
             </>
