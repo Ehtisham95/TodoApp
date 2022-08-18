@@ -10,7 +10,7 @@ const RoundedTouchableOpacity = styled.TouchableOpacity`
   justify-content: center;
   align-items: center;
   border-radius: 32px;
-  background-color: black;
+  background-color: ${props => props.color || 'black'};
   align-self: center;
   margin-top: 32px;
 `;
@@ -20,8 +20,8 @@ const TextButton = styled.Text`
   font-size: 16px;
 `;
 
-export const RoundedButton = ({onPress, title}) => (
-  <RoundedTouchableOpacity onPress={onPress} activeOpacity={0.5}>
+export const RoundedButton = ({onPress, title, color}) => (
+  <RoundedTouchableOpacity onPress={onPress} color={color} activeOpacity={0.5}>
     <TextButton>{title}</TextButton>
   </RoundedTouchableOpacity>
 );

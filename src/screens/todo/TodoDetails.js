@@ -1,11 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import {Text, View} from 'react-native';
+import {useDispatch} from 'react-redux';
 import {AddTodo} from '../../data/TodoRepo';
+import {fetchTodoList} from '../../redux/TodoSlice';
 import {RoundedTextInput} from '../../styles/textinputs/RoundedTextInput';
 import {ScreenTitle} from '../../styles/texts/ScreenTitle';
 
 const TodoDetails = ({navigation}) => {
   const [todoDetails, setTodoDetails] = useState({title: '', description: ''});
+  const dispatch = useDispatch();
 
   const editDetails = ({newTitle, newDescription}) => {
     if (newTitle != null) setTodoDetails({...todoDetails, title: newTitle});
@@ -24,6 +27,7 @@ const TodoDetails = ({navigation}) => {
       if (success) {
         alert('Todo Added Successfully!');
         setTodoDetails({title: '', description: ''});
+        dispatch(fetchTodoList());
       } else {
         alert('Something went wrong!');
       }

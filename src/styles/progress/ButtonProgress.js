@@ -9,12 +9,12 @@ const ProgressBox = styled.View`
   justify-content: center;
   align-items: center;
   border-radius: 32px;
-  background-color: black;
+  background-color: ${props => props.color || 'black'};
   align-self: center;
   margin-top: 32px;
 `;
-export default ButtonProgress = () => (
-  <ProgressBox>
+export default ButtonProgress = ({color}) => (
+  <ProgressBox color={color}>
     <Progress.Circle size={30} indeterminate={true} color="white" />
   </ProgressBox>
 );

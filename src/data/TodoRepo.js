@@ -35,22 +35,28 @@ export const UpdateTodo = async ({
   const reference = database().ref(
     `/users/${userData.user.id}/todos/${date}/${id}`,
   );
-  let updatedObject = {
-    title: title,
-    description: description,
-    isCompleted: isCompleted,
-  };
 
-  let respone = await reference.update(updatedObject);
-  if (respone) {
+  try {
+    let response = await reference.update({isCompleted: isCompleted});
     return true;
-  } else return false;
+  } catch (err) {
+    return false;
+  }
 };
 
 export const getTodosOnce = async () => {
   const userData = await getUserData();
   const reference = database().ref(`/users/${userData.user.id}/todos/`);
   let respone = await reference.once('value');
+  if (respone) {
+    return respone.val();
+  } else return null;
+};
+
+export const getTodosAlways = async () => {
+  const userData = await getUserData();
+  const reference = database().ref(`/users/${userData.user.id}/todos/`);
+  let respone = await reference.on('value');
   if (respone) {
     return respone.val();
   } else return null;

@@ -1,18 +1,13 @@
 import React, {Node, useState} from 'react';
 import {Alert} from 'react-native';
 import {useDispatch} from 'react-redux';
-import styled from 'styled-components/native';
 import {getUserData, setUserData, signInWithNumber} from '../../data/AuthRepo';
 import {loginSlice} from '../../redux/LoginSlice';
 import {RoundedButton} from '../../styles/buttons/RoundedButton';
 import ButtonProgress from '../../styles/progress/ButtonProgress';
 import {RoundedTextInput} from '../../styles/textinputs/RoundedTextInput';
 import {ScreenTitle} from '../../styles/texts/ScreenTitle';
-
-const StyledView = styled.View`
-  background-color: white;
-  flex: 1;
-`;
+import {StyledView} from './stylables';
 
 const Login: () => Node = ({navigation}) => {
   const [inputFields, setInputFields] = useState({number: '', loading: false});
@@ -39,32 +34,28 @@ const Login: () => Node = ({navigation}) => {
     dispatch(loginSlice.actions.loggedIn(loggedInUser));
   };
 
+  let button;
+
   if (!inputFields.loading) {
-    return (
-      <StyledView>
-        <ScreenTitle title="Sign In" />
-        <RoundedTextInput
-          placeholder="Phone Number"
-          onChangeText={num => setInputFields({...inputFields, number: num})}
-          maxLength={14}
-          value={inputFields.number}
-        />
-        <RoundedButton title="Login" onPress={() => signIn()} />
-      </StyledView>
+    button = (
+      <RoundedButton title="Login" color="green" onPress={() => signIn()} />
     );
   } else {
-    return (
-      <StyledView>
-        <ScreenTitle title="Sign In" />
-        <RoundedTextInput
-          placeholder="Phone Number"
-          maxLength={14}
-          value={inputFields.number}
-        />
-        <ButtonProgress />
-      </StyledView>
-    );
+    button = <ButtonProgress color="green" />;
   }
+
+  return (
+    <StyledView>
+      <ScreenTitle title="Sign In" />
+      <RoundedTextInput
+        placeholder="Phone Number"
+        onChangeText={num => setInputFields({...inputFields, number: num})}
+        maxLength={14}
+        value={inputFields.number}
+      />
+      {button}
+    </StyledView>
+  );
 };
 
 export default Login;

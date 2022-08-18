@@ -1,66 +1,88 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {FlatList, RefreshControl, ScrollView} from 'react-native';
-import {FAB} from 'react-native-elements';
-import styled from 'styled-components/native';
-import {getTodosOnce} from '../../data/TodoRepo';
+import React, {useEffect} from 'react';
+import {FlatList, Text} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
+import {fetchTodoList, getTodoList, getTodoStatus} from '../../redux/TodoSlice';
+import FAB from '../../styles/buttons/FAB';
 import Routes from '../../utils/Routes';
+import {FabBg, HomeBg, HomeCenterBg} from './stylables';
 import TodoListItem from './TodoListItem';
 
-const HomeBg = styled.View`
-  flex: 1;
-  height: 100%;
-`;
+const evaluateData = todos => {
+  if (todos) {
+    let itemsArray = new Array();
 
-const FabStyle = styled.View`
-  position: absolute;
-  bottom: 24px;
-  right: 24px;
-`;
-
-const Home = ({navigation}) => {
-  const [todoList, setTodoList] = useState([]);
-  const [refreshing, setRefreshing] = React.useState(false);
-
-  useEffect(() => {
-    getData();
-  }, []);
-
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    wait(2000).then(() => setRefreshing(false));
-  }, []);
-
-  const getData = async () => {
-    let response = await getTodosOnce();
-    let list = evaluateData(response);
-    setTodoList(list);
-  };
-
-  const evaluateData = response => {
-    let items = Object.keys(response).map(k => response[k]);
-    var itemsArray = new Array();
-
-    Object.keys(response).map(dayKey => {
-      Object.keys(response[dayKey]).map(timeKey => {
-        itemsArray.push(response[dayKey][timeKey]);
+    Object.keys(todos).map(dayKey => {
+      Object.keys(todos[dayKey]).map(timeKey => {
+        itemsArray.push(todos[dayKey][timeKey]);
       });
     });
+    itemsArray.sort((a, b) => b.id - a.id);
     return itemsArray;
-  };
+  }
+};
+
+const searchDay = ({item, response}) => {
+  let day = '';
+  Object.keys(response).map(dayKey => {
+    Object.keys(response[dayKey]).map(timeKey => {
+      if (item.id == timeKey) {
+        day = dayKey;
+      }
+    });
+  });
+  return day;
+};
+
+const Home = ({navigation}) => {
+  const dispatch = useDispatch();
+  const todoListResponse = useSelector(getTodoList);
+  const todoStatus = useSelector(getTodoStatus);
+  const todoList = evaluateData(todoListResponse);
+
+  useEffect(() => {
+    console.log('Todo Status:', todoStatus);
+    if (todoStatus === 'idle') {
+      dispatch(fetchTodoList());
+    }
+  }, [todoStatus, dispatch]);
+
+  let screenData;
+  if (todoStatus === 'loading') {
+    screenData = (
+      <HomeCenterBg>
+        <Text>Loading data...</Text>
+      </HomeCenterBg>
+    );
+  } else if (todoStatus === 'succeeded') {
+    screenData = (
+      <FlatList
+        data={todoList}
+        renderItem={({item}) => (
+          <TodoListItem
+            item={item}
+            date={searchDay({item: item, response: todoListResponse})}
+          />
+        )}
+      />
+    );
+  } else if (todoStatus === 'failed') {
+    screenData = (
+      <HomeCenterBg>
+        <Text>No data available</Text>
+      </HomeCenterBg>
+    );
+  }
 
   return (
     <HomeBg>
-      <FlatList
-        data={todoList}
-        renderItem={({item}) => <TodoListItem item={item} />}
-      />
-      <FabStyle>
+      {screenData}
+      <FabBg>
         <FAB
           title="Add Todo"
           color="green"
           onPress={() => navigation.navigate(Routes.ROUTE_TODO)}
         />
-      </FabStyle>
+      </FabBg>
     </HomeBg>
   );
 };
