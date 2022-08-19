@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Text, View} from 'react-native';
 import {useDispatch} from 'react-redux';
 import {AddTodo} from '../../data/TodoRepo';
-import {fetchTodoList} from '../../redux/TodoSlice';
+import {fetchTodoList} from '../home/TodoSlice';
 import {RoundedTextInput} from '../../styles/textinputs/RoundedTextInput';
 import {ScreenTitle} from '../../styles/texts/ScreenTitle';
 

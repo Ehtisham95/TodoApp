@@ -2,7 +2,7 @@ import React, {Node, useState} from 'react';
 import {Alert} from 'react-native';
 import {useDispatch} from 'react-redux';
 import {getUserData, setUserData, signInWithNumber} from '../../data/AuthRepo';
-import {loginSlice} from '../../redux/LoginSlice';
+import {loginSlice} from './LoginSlice';
 import {RoundedButton} from '../../styles/buttons/RoundedButton';
 import ButtonProgress from '../../styles/progress/ButtonProgress';
 import {RoundedTextInput} from '../../styles/textinputs/RoundedTextInput';

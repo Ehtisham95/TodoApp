@@ -1,37 +1,13 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useCallback} from 'react';
 import {FlatList, Text} from 'react-native';
+import * as Progress from 'react-native-progress';
 import {useDispatch, useSelector} from 'react-redux';
-import {fetchTodoList, getTodoList, getTodoStatus} from '../../redux/TodoSlice';
 import FAB from '../../styles/buttons/FAB';
 import Routes from '../../utils/Routes';
 import {FabBg, HomeBg, HomeCenterBg} from './stylables';
 import TodoListItem from './TodoListItem';
-
-const evaluateData = todos => {
-  if (todos) {
-    let itemsArray = new Array();
-
-    Object.keys(todos).map(dayKey => {
-      Object.keys(todos[dayKey]).map(timeKey => {
-        itemsArray.push(todos[dayKey][timeKey]);
-      });
-    });
-    itemsArray.sort((a, b) => b.id - a.id);
-    return itemsArray;
-  }
-};
-
-const searchDay = ({item, response}) => {
-  let day = '';
-  Object.keys(response).map(dayKey => {
-    Object.keys(response[dayKey]).map(timeKey => {
-      if (item.id == timeKey) {
-        day = dayKey;
-      }
-    });
-  });
-  return day;
-};
+import {fetchTodoList, getTodoList, getTodoStatus} from './TodoSlice';
+import {evaluateData, searchDay} from './utils';
 
 const Home = ({navigation}) => {
   const dispatch = useDispatch();
@@ -40,7 +16,6 @@ const Home = ({navigation}) => {
   const todoList = evaluateData(todoListResponse);
 
   useEffect(() => {
-    console.log('Todo Status:', todoStatus);
     if (todoStatus === 'idle') {
       dispatch(fetchTodoList());
     }
@@ -50,7 +25,7 @@ const Home = ({navigation}) => {
   if (todoStatus === 'loading') {
     screenData = (
       <HomeCenterBg>
-        <Text>Loading data...</Text>
+        <Progress.Circle size={50} indeterminate={true} color="green" />
       </HomeCenterBg>
     );
   } else if (todoStatus === 'succeeded') {

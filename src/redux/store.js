@@ -1,6 +1,6 @@
 import {configureStore} from '@reduxjs/toolkit';
-import {loginSlice} from './LoginSlice';
-import {todoSlice} from './TodoSlice';
+import {loginSlice} from '../screens/login/LoginSlice';
+import {todoSlice} from '../screens/home/TodoSlice';
 
 export const store = configureStore({
   reducer: {

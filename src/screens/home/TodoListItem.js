@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {memo} from 'react';
 import {UpdateTodo} from '../../data/TodoRepo';
 import AppDivider from '../../styles/dividers/AppDivider';
 import {convertMillisToShowDate} from '../../utils/TimeUtils';
@@ -36,4 +36,4 @@ const TodoListItem = ({date, item}) => {
   );
 };
 
-export default TodoListItem;
+export default memo(TodoListItem);

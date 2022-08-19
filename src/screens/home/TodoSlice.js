@@ -1,5 +1,5 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
-import {getTodosOnce} from '../data/TodoRepo';
+import {getTodosOnce} from '../../data/TodoRepo';
 
 const initialState = {
   response: {},

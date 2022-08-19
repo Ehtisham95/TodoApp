@@ -6,7 +6,7 @@ import React, {useEffect, useState} from 'react';
 import {Provider, useDispatch, useSelector} from 'react-redux';
 import {ThemeProvider} from 'styled-components';
 import {getUserData, setUserData} from './src/data/AuthRepo';
-import {loggedIn, loginSlice, loggedOut} from './src/redux/LoginSlice';
+import {loggedIn, loginSlice, loggedOut} from './src/screens/login/LoginSlice';
 import {store} from './src/redux/store';
 import Home from './src/screens/home/Home';
 import TodoDetails from './src/screens/todo/TodoDetails';
