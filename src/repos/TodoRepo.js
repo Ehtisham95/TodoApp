@@ -1,7 +1,8 @@
 import database from '@react-native-firebase/database';
 import {getUserData} from './AuthRepo';
+import {createAsyncThunk} from '@reduxjs/toolkit';
 
-export const AddTodo = async ({title, description}) => {
+export const AddTodoRequest = async ({title, description}) => {
   const userData = await getUserData();
   const currentTime = Date.now().valueOf();
   const reference = database().ref(
@@ -35,7 +36,6 @@ export const UpdateTodo = async ({
   const reference = database().ref(
     `/users/${userData.user.id}/todos/${date}/${id}`,
   );
-
   try {
     let response = await reference.update({isCompleted: isCompleted});
     return true;
@@ -44,20 +44,16 @@ export const UpdateTodo = async ({
   }
 };
 
-export const getTodosOnce = async () => {
-  const userData = await getUserData();
-  const reference = database().ref(`/users/${userData.user.id}/todos/`);
-  let respone = await reference.once('value');
-  if (respone) {
-    return respone.val();
-  } else return null;
-};
-
-export const getTodosAlways = async () => {
-  const userData = await getUserData();
-  const reference = database().ref(`/users/${userData.user.id}/todos/`);
-  let respone = await reference.on('value');
-  if (respone) {
-    return respone.val();
-  } else return null;
-};
+/** Redux Async Thunks */
+export const fetchTodoList = createAsyncThunk('todo/fetchList', async () => {
+  try {
+    const userData = await getUserData();
+    const reference = database().ref(`/users/${userData.user.id}/todos/`);
+    let respone = await reference.once('value');
+    if (respone) {
+      return respone.val();
+    } else return null;
+  } catch (err) {
+    return err;
+  }
+});

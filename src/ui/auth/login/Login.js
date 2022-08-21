@@ -1,17 +1,30 @@
 import React, {Node, useState} from 'react';
 import {Alert} from 'react-native';
 import {useDispatch} from 'react-redux';
-import {getUserData, setUserData, signInWithNumber} from '../../data/AuthRepo';
-import {loginSlice} from './LoginSlice';
-import {RoundedButton} from '../../styles/buttons/RoundedButton';
-import ButtonProgress from '../../styles/progress/ButtonProgress';
-import {RoundedTextInput} from '../../styles/textinputs/RoundedTextInput';
-import {ScreenTitle} from '../../styles/texts/ScreenTitle';
+import {
+  getUserData,
+  setUserData,
+  signInWithNumber,
+} from '../../../repos/AuthRepo';
+import {loginSlice} from '../redux/LoginSlice';
+import {RoundedButton} from '../../../common/buttons/roundedbutton/RoundedButton';
+import ButtonProgress from '../../../common/progress/ButtonProgress';
+import {RoundedTextInput} from '../../../common/roundedtextinput/RoundedTextInput';
+import {ScreenTitle} from '../../../common/screentitle/ScreenTitle';
 import {StyledView} from './stylables';
 
 const Login: () => Node = ({navigation}) => {
   const [inputFields, setInputFields] = useState({number: '', loading: false});
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    navigation.setOptions(
+      {
+        headerShown: false,
+      },
+      [navigation],
+    );
+  });
 
   //Sign in function
   async function signIn() {
@@ -24,6 +37,7 @@ const Login: () => Node = ({navigation}) => {
       Alert.alert('Error', 'Login Error!');
     }
   }
+
   //Connecting with Firebase
   const onAuthStateChanged = async () => {
     await setUserData({
@@ -35,7 +49,6 @@ const Login: () => Node = ({navigation}) => {
   };
 
   let button;
-
   if (!inputFields.loading) {
     button = (
       <RoundedButton title="Login" color="green" onPress={() => signIn()} />

@@ -1,12 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import {Text, View} from 'react-native';
 import {useDispatch} from 'react-redux';
-import {AddTodo} from '../../data/TodoRepo';
-import {fetchTodoList} from '../home/TodoSlice';
-import {RoundedTextInput} from '../../styles/textinputs/RoundedTextInput';
-import {ScreenTitle} from '../../styles/texts/ScreenTitle';
+import {RoundedTextInput} from '../../../common/roundedtextinput/RoundedTextInput';
+import {ScreenTitle} from '../../../common/screentitle/ScreenTitle';
+import {AddTodo} from '../../../repos/remote/TodoRepo';
+import {fetchTodoList} from '../../../repos/TodoRepo';
+import Theme from '../../../utils/theme';
+import {addTodo} from './AddTodoHelper';
 
-const TodoDetails = ({navigation}) => {
+const AddTodo = ({navigation}) => {
   const [todoDetails, setTodoDetails] = useState({title: '', description: ''});
   const dispatch = useDispatch();
 
@@ -16,21 +18,11 @@ const TodoDetails = ({navigation}) => {
       setTodoDetails({...todoDetails, description: newDescription});
   };
 
-  const addOrEditTodo = async () => {
-    console.log('todo details', todoDetails);
-    if (!todoDetails.title || todoDetails.title.length < 1) {
-      alert('Title cannot be emtpy!');
-    } else if (!todoDetails.description || todoDetails.description.length < 1) {
-      alert('Desctiption cannot be emtpy!');
-    } else {
-      let success = AddTodo(todoDetails);
-      if (success) {
-        alert('Todo Added Successfully!');
-        setTodoDetails({title: '', description: ''});
-        dispatch(fetchTodoList());
-      } else {
-        alert('Something went wrong!');
-      }
+  const callAddTodo = async () => {
+    let success = addTodo(todoDetails);
+    if (success) {
+      setTodoDetails({title: '', description: ''});
+      dispatch(fetchTodoList());
     }
   };
 
@@ -38,7 +30,9 @@ const TodoDetails = ({navigation}) => {
     navigation.setOptions(
       {
         title: '',
-        headerRight: () => <Text onPress={() => addOrEditTodo()}>Done</Text>,
+        headerRight: () => <Text onPress={() => callAddTodo()}>Done</Text>,
+        headerTintColor: Theme.colors.textColor,
+        headerStyle: {backgroundColor: Theme.colors.primary},
       },
       [navigation],
     );
@@ -62,4 +56,4 @@ const TodoDetails = ({navigation}) => {
   );
 };
 
-export default TodoDetails;
+export default AddTodo;

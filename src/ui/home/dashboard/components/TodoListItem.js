@@ -1,13 +1,13 @@
-import React, {memo} from 'react';
-import {UpdateTodo} from '../../data/TodoRepo';
+import React, { memo } from 'react';
+import { UpdateTodo } from '../../data/TodoRepo';
 import AppDivider from '../../styles/dividers/AppDivider';
-import {convertMillisToShowDate} from '../../utils/TimeUtils';
+import { convertMillisToShowDate } from '../../utils/TimeUtils';
 import {
   CheckBoxBg,
   DescriptionText,
   TitleText,
-  TodoListItemStyle,
-} from './stylables';
+  TodoListItemStyle
+} from '../stylables';
 import TodoCheckbox from './TodoCheckBox';
 
 const TodoListItem = ({date, item}) => {
@@ -20,7 +20,7 @@ const TodoListItem = ({date, item}) => {
   };
 
   return (
-    <TodoListItemStyle>
+    <TodoLi>
       <TitleText>{item.title ? item.title : '--'}</TitleText>
       <DescriptionText rightMargin="50px" topMargin="8px">
         {item.description ? item.description : '--'}

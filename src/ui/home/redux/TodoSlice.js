@@ -1,20 +1,10 @@
-import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
-import {getTodosOnce} from '../../data/TodoRepo';
+import {createSlice} from '@reduxjs/toolkit';
 
 const initialState = {
   response: {},
   status: 'idle', // 'idle' || 'loading' || 'succeeded' || 'failed'
   error: '',
 };
-
-export const fetchTodoList = createAsyncThunk('todo/fetchList', async () => {
-  try {
-    const response = await getTodosOnce();
-    return response;
-  } catch (err) {
-    return err;
-  }
-});
 
 export const todoSlice = createSlice({
   name: 'todoSlice',
